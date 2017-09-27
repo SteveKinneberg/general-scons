@@ -143,7 +143,9 @@ def DoxySourceFiles(node, env):
         '*.c', '*.cc', '*.cxx', '*.cpp', '*.c++', '*.java', '*.ii', '*.ixx',
         '*.ipp', '*.i++', '*.inl', '*.h', '*.hh ', '*.hxx', '*.hpp', '*.h++',
         '*.idl', '*.odl', '*.cs', '*.php', '*.php3', '*.inc', '*.m', '*.mm',
-        '*.py',
+        '*.py', '*.ddl', '*.d', '*.php4', '*.php5', '*.phtml', '*.inc',
+        '*.markdown', '*.md', '*.dox', '*.f90', '*.f', '*.for', '*.tcl', '*.vhd',
+        '*.vhdl', '*.ucf', '*.qsf', '*.as', '*.js'
     ]
 
     default_exclude_patterns = [
@@ -169,6 +171,7 @@ def DoxySourceFiles(node, env):
     exclude_patterns = data.get("EXCLUDE_PATTERNS", default_exclude_patterns)
 
     input = data.get("INPUT")
+    excludes = data.get("EXCLUDE", [])
     if input:
         for node in data.get("INPUT", []):
             if not os.path.isabs(node):
@@ -178,6 +181,9 @@ def DoxySourceFiles(node, env):
             elif os.path.isdir(node):
                 if recursive:
                     for root, dirs, files in os.walk(node):
+                        if os.path.relpath(root) in excludes:
+                            dirs[:] = []
+                            files[:] = []
                         for f in files:
                             filename = os.path.join(root, f)
 
@@ -193,6 +199,9 @@ def DoxySourceFiles(node, env):
         # No INPUT specified, so apply plain patterns only
         if recursive:
             for root, dirs, files in os.walk('.'):
+                if os.path.relpath(root) in excludes:
+                    dirs[:] = []
+                    files[:] = []
                 for f in files:
                     filename = os.path.join(root, f)
 
@@ -323,12 +332,18 @@ def DoxyEmitter(target, source, env):
 
     return (targets, source)
 
+def message(s, target, source, env):
+    if s.startswith('cd '):
+        print env.subst(env['DOXYGENCOMSTR'], 1, target, source)
+    else:
+        print s
 
 def generate(env):
     """
     Add builders and construction variables for the
     Doxygen tool.  This is currently for Doxygen 1.4.6.
     """
+    env['DOXYGENCOMSTR'] = 'running ${DOXYGEN} ${SOURCE.file}'
     doxyfile_scanner = env.Scanner(
         DoxySourceScan,
         "DoxySourceScan",
@@ -342,6 +357,7 @@ def generate(env):
         target_factory=env.fs.Entry,
         single_source=True,
         source_scanner=doxyfile_scanner,
+        PRINT_CMD_LINE_FUNC=message
     )
 
     env.Append(BUILDERS={

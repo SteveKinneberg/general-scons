@@ -3,47 +3,29 @@ import SCons
 from SCons.Builder import Builder
 from SCons.Script import Dir, Flatten, Mkdir
 
-from os import path
-
-
-class ToolGenHtmlWarning(SCons.Warnings.Warning):
-    pass
-
-
-class GenHtmlExecutableNotFound(ToolGenHtmlWarning):
-    pass
-
-
 def genhtml_generator(source, target, env, for_signature):
-    cmd = ['genhtml']
+    cmd = [env['GENHTML']]
+
+    if 'GENHTMLOPTS' in env:
+        cmd += env['GENHTMLOPTS']
+
     cmd += [str(source[0])]
     cmd += ['--output-directory', str(target[0])]
 
     return ' '.join(Flatten(cmd))
 
 
-_genhtml_builder = Builder(generator=genhtml_generator)
+def genhtml_message(s, target, source, env):
+    if env.has_key('GENHTMLCOMSTR'):
+        print env.subst(env['GENHTMLCOMSTR'], 1, target, source)
+    else:
+        print s
 
 
 def generate(env):
-    env['GenHtml'] = _detect(env)
-    env['BUILDERS']['GenHtml'] = _genhtml_builder
-
-def _detect(env):
-    try:
-        return env['GenHtml']
-    except KeyError:
-        pass
-
-    genhtml = env.WhereIs('genhtml')
-    if genhtml:
-        return genhtml 
-
-    raise SCons.Errors.StopError(GenHtmlExecutableNotFound,
-                                 'Cound not detect genhtml executable')
-
-    return None
+    env['GENHTML'] = 'genhtml'
+    env['BUILDERS']['GenHtml'] = Builder(generator=genhtml_generator, PRINT_CMD_LINE_FUNC=genhtml_message)
 
 
 def exists(env):
-    return _detect(env)
+    return env.Detect('genhtml')

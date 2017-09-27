@@ -3,20 +3,12 @@ import SCons
 from SCons.Builder import Builder
 from SCons.Script import Dir, Flatten, Mkdir
 
-from os import path
-
-
-class ToolLCovWarning(SCons.Warnings.Warning):
-    pass
-
-
-class LCovExecutableNotFound(ToolLCovWarning):
-    pass
-
-
 def lcov_generator(source, target, env, for_signature):
-    cmd = ['lcov --capture']
+    cmd = [env['LCOV'], '--capture']
     cmd += ['--output-file', target[0].abspath]
+
+    if 'LCOVOPTS' in env:
+        cmd += env['LCOVOPTS']
 
     if 'LCOVDIR' in env:
         cmd += ['--directory', str(Dir(env['LCOVDIR']))]
@@ -27,28 +19,15 @@ def lcov_generator(source, target, env, for_signature):
     return ' '.join(Flatten(cmd))
 
 
-_lcov_builder = Builder(generator=lcov_generator)
-
+def lcov_message(s, target, source, env):
+    if env.has_key('LCOVCOMSTR'):
+        print env.subst(env['LCOVCOMSTR'], 1, target, source)
+    else:
+        print s
 
 def generate(env):
-    env['LCov'] = _detect(env)
-    env['BUILDERS']['LCov'] = _lcov_builder
-
-def _detect(env):
-    try:
-        return env['LCov']
-    except KeyError:
-        pass
-
-    lcov = env.WhereIs('lcov')
-    if lcov:
-        return lcov
-
-    raise SCons.Errors.StopError(LCovExecutableNotFound,
-                                 'Cound not detect lcov executable')
-
-    return None
-
+    env['LCOV'] = 'lcov'
+    env['BUILDERS']['LCov'] = Builder(generator=lcov_generator, PRINT_CMD_LINE_FUNC=lcov_message)
 
 def exists(env):
-    return _detect(env)
+    return env.Detect('lcov')
