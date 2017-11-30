@@ -1,2 +1,15 @@
-# for projects that use SCons for building: http://http://www.scons.org/
-.sconsign.dblite
+# Ignore editor temp files and backup files
+*~
+*.bak
+*.swp.
+.\#*
+\#*\#
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore generated SConsfiles
+*.pyc
+.scon*
+config.log
