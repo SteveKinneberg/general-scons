@@ -1,0 +1,32 @@
+Import('project_env')
+
+#######################################################
+# Create host build environment
+#######################################################
+build_dir = project_env['build_dir'] + '/host'
+install_basedir = project_env['install_basedir'] + '/host'
+
+env = project_env.Clone(
+    tools = [ 'default' ],
+    build_dir = build_dir,
+    install_basedir = install_basedir,
+    install_bindir = install_basedir + '/bin',
+    install_incdir = install_basedir + '/include',
+    install_libdir = install_basedir + '/lib',
+    install_docdir = install_basedir + '/docs',
+    install_covdir = install_basedir + '/coverage',
+    required = {},
+    native_build = True
+)
+
+#######################################################
+# Setup host toolchain options
+#######################################################
+SConscript('tool_options/SConscript.tool_options', exports = ['env'])
+
+#######################################################
+# Setup host coverage options
+#######################################################
+env['COVERAGE'] = False
+
+Return('env')
