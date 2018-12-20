@@ -64,7 +64,7 @@ if os.path.exists('Doxyfile'):
         project_env.Alias('docs', docs)
         project_env.Alias('all', 'docs')
     else:
-        print '*** WARNING: Documentation not generated: Doxygen not found'
+        print('*** WARNING: Documentation not generated: Doxygen not found')
 
 #######################################################
 # Build the various parts
@@ -86,12 +86,12 @@ if GetOption('run-tests'):
 #######################################################
 # Check required build dependencies
 #######################################################
-if not all([ v for v in host_env['required'].itervalues() ]):
-    print '*** Missing required host build dependencies:'
-    print '\n'.join([ '\t%s' % k for k,v in target_env['required'].iteritems() if not v])
+if not all([ v for v in host_env['required'].values() ]):
+    print('*** Missing required host build dependencies:')
+    print('\n'.join([ '\t%s' % k for k,v in target_env['required'].items() if not v]))
     Exit(1)
 
-if not all([ v for v in target_env['required'].itervalues() ]):
-    print '*** Missing required target build dependencies:'
-    print '\n'.join([ '\t%s' % k for k,v in target_env['required'].iteritems() if not v])
+if not all([ v for v in target_env['required'].values() ]):
+    print('*** Missing required target build dependencies:')
+    print('\n'.join([ '\t%s' % k for k,v in target_env['required'].items() if not v]))
     Exit(1)

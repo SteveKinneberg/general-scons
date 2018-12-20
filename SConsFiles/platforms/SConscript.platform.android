@@ -38,7 +38,7 @@ Help(vars.GenerateHelpText(env))
 # ANDROID_NDK_PATH must be set.
 if not env.get('ANDROID_NDK_PATH', None):
     if not GetOption('help'):
-        print '*** ANDROID_NDK_PATH variable is required.'
+        print('*** ANDROID_NDK_PATH variable is required.')
         Exit(1)
 
 

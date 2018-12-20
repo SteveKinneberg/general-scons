@@ -17,7 +17,7 @@ if env['COVERAGE']:
 
     if not have_coverage:
         env['COVERAGE'] = False
-        print '*** WARNING: Code coverage reports not available: LCov and GenHtml not found'
+        print('*** WARNING: Code coverage reports not available: LCov and GenHtml not found')
 
 #######################################################
 # Setup GCC code coverage compiler/link options
@@ -29,7 +29,7 @@ if env['COVERAGE']:
     env = config.Finish()
     if not coverage_support:
         env['COVERAGE'] = False
-        print '*** WARNING: Code coverage reports not available: --coverage compiler option not supported'
+        print('*** WARNING: Code coverage reports not available: --coverage compiler option not supported')
 
 #######################################################
 # Setup GCC code coverage builder

@@ -16,10 +16,10 @@ def genhtml_generator(source, target, env, for_signature):
 
 
 def genhtml_message(s, target, source, env):
-    if env.has_key('GENHTMLCOMSTR'):
-        print env.subst(env['GENHTMLCOMSTR'], 1, target, source)
+    if 'GENHTMLCOMSTR' in env:
+        print(env.subst(env['GENHTMLCOMSTR'], 1, target, source))
     else:
-        print s
+        print(s)
 
 
 def generate(env):

@@ -20,10 +20,10 @@ def lcov_generator(source, target, env, for_signature):
 
 
 def lcov_message(s, target, source, env):
-    if env.has_key('LCOVCOMSTR'):
-        print env.subst(env['LCOVCOMSTR'], 1, target, source)
+    if 'LCOVCOMSTR' in env:
+        print(env.subst(env['LCOVCOMSTR'], 1, target, source))
     else:
-        print s
+        print(s)
 
 def generate(env):
     env['LCOV'] = 'lcov'

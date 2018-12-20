@@ -210,7 +210,7 @@ def _object2gcda(env, objects, target):
     return gcdas
 
 def _detect_gcov(env):
-    if env.has_key('GCCCOV'):
+    if 'GCCCOV' in env:
         return env['GCCCOV']
     return env.WhereIs('gcov')
 

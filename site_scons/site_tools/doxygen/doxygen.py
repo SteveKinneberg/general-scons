@@ -24,6 +24,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+import io
 import os
 import os.path
 import glob
@@ -106,7 +107,8 @@ def DoxyfileParse(file_contents, conf_dir, data=None):
                     raise Exception("recursive @INCLUDE in Doxygen config: " + nextfile)
                 data[key].append(nextfile)
                 fh = open(nextfile, 'r')
-                DoxyfileParse(fh.read(), conf_dir, data)
+                # DoxyfileParse(fh.read(), conf_dir, data)
+                DoxyfileParse(fh, conf_dir, data)
                 fh.close()
             else:
                 append_data(data, key, new_data, token)
@@ -120,9 +122,11 @@ def DoxyfileParse(file_contents, conf_dir, data=None):
             append_data(data, key, new_data, '\\')
 
     # compress lists of len 1 into single strings
+    data = dict([ (k, v) for (k, v) in data.items() if len(v) > 0 ])
+
     for (k, v) in data.items():
-        if len(v) == 0:
-            data.pop(k)
+        # if len(v) == 0:
+        #     data.pop(k)
 
         # items in the following list will be kept as lists and not converted to strings
         if k in ["INPUT", "FILE_PATTERNS", "EXCLUDE_PATTERNS", "TAGFILES", "@INCLUDE"]:
@@ -160,7 +164,7 @@ def DoxySourceFiles(node, env):
     # go onto the sources list
     conf_dir = os.path.dirname(str(node))
 
-    data = DoxyfileParse(node.get_contents(), conf_dir)
+    data = DoxyfileParse(io.StringIO(node.get_contents()), conf_dir)
 
     if data.get("RECURSIVE", "NO") == "YES":
         recursive = True
@@ -263,7 +267,7 @@ def DoxyEmitter(target, source, env):
     """Doxygen Doxyfile emitter"""
     doxy_fpath = str(source[0])
     conf_dir = os.path.dirname(doxy_fpath)
-    data = DoxyfileParse(source[0].get_contents(), conf_dir)
+    data = DoxyfileParse(io.StringIO(source[0].get_contents().decode('utf-8')), conf_dir)
 
     targets = []
     out_dir = data.get("OUTPUT_DIRECTORY", ".")
@@ -334,9 +338,9 @@ def DoxyEmitter(target, source, env):
 
 def message(s, target, source, env):
     if s.startswith('cd '):
-        print env.subst(env['DOXYGENCOMSTR'], 1, target, source)
+        print(env.subst(env['DOXYGENCOMSTR'], 1, target, source))
     else:
-        print s
+        print(s)
 
 def generate(env):
     """

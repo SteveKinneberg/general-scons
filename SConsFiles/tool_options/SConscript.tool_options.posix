@@ -9,10 +9,10 @@ Import('env', 'custom_tests')
 # Toolchain environment variables
 #######################################################
 # Add the TERM environment variable if it exists for color output from GCC.
-if os.environ.has_key('TERM'):
+if 'TERM' in os.environ:
     env.Append(ENV = { 'TERM': os.environ['TERM'] })
 
-if os.environ.has_key('PKG_CONFIG_PATH'):
+if 'PKG_CONFIG_PATH' in os.environ:
     env['ENV']['PKG_CONFIG_PATH'] = os.environ.get('PKG_CONFIG_PATH', '')
     env['ENV']['PKG_CONFIG_SYSROOT_DIR'] = os.environ.get('PKG_CONFIG_SYSROOT_DIR', '')
 

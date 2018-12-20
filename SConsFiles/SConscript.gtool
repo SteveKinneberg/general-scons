@@ -54,10 +54,10 @@ Help(vars.GenerateHelpText(env))
 # Custom Builders
 #######################################################
 def RunTestMessage(s, target, source, env):
-    if env.has_key('TESTCOMSTR'):
-        print env.subst(env['TESTCOMSTR'], 1, target, source)
+    if 'TESTCOMSTR' in env:
+        print(env.subst(env['TESTCOMSTR'], 1, target, source))
     else:
-        print s
+        print(s)
 
 def RunTestGenerator(source, target, env, for_signature):
     test_filter = env.get('GTEST_FILTER', '')
