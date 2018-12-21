@@ -1,3 +1,4 @@
+import os
 import sys
 
 Import('base_env')
@@ -12,7 +13,7 @@ env = base_env.Clone(automated_tests = [],
 
 if env['native_build'] and env['PRODUCTION']:
     env['ENV']['LD_LIBRARY_PATH'] = ':'.join([ os.environ['LD_LIBRARY_PATH'],
-                                               str(target_test_env.Dir(env['install_libdir'])) ] )
+                                               str(env.Dir(env['install_libdir'])) ] )
 
 #######################################################
 # Setup/build Google Mock and Google Test
