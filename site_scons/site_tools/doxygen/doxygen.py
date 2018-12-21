@@ -29,6 +29,7 @@ import os
 import os.path
 import glob
 from fnmatch import fnmatch
+from functools import reduce
 
 # Currently supported output formats and their default
 # values and output locations.
@@ -125,9 +126,6 @@ def DoxyfileParse(file_contents, conf_dir, data=None):
     data = dict([ (k, v) for (k, v) in data.items() if len(v) > 0 ])
 
     for (k, v) in data.items():
-        # if len(v) == 0:
-        #     data.pop(k)
-
         # items in the following list will be kept as lists and not converted to strings
         if k in ["INPUT", "FILE_PATTERNS", "EXCLUDE_PATTERNS", "TAGFILES", "@INCLUDE"]:
             continue
@@ -164,7 +162,7 @@ def DoxySourceFiles(node, env):
     # go onto the sources list
     conf_dir = os.path.dirname(str(node))
 
-    data = DoxyfileParse(io.StringIO(node.get_contents()), conf_dir)
+    data = DoxyfileParse(io.StringIO(node.get_contents().decode('utf-8')), conf_dir)
 
     if data.get("RECURSIVE", "NO") == "YES":
         recursive = True
