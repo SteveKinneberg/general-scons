@@ -70,7 +70,7 @@ def _CheckCXXSymbol(context, symbol, parameter_str = "()", includes = ''):
         incs = includes
     code = incs + "\nauto __SCONS_TEST__ = %s%s;" % (symbol, parameter_str)
     ret = context.TryCompile(code, '.cc')
-    comment = 'Define to 1 if you have the \'%s\' symbol.'
+    comment = 'Define to 1 if you have the \'%s\' symbol.' % symbol
     key = 'HAVE_%s' % symbol
     SCons.Conftest._Have(context, key, ret, comment)
     context.Result(ret)
