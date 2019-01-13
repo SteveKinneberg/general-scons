@@ -31,12 +31,13 @@ env['required'].update({
 })
 
 # Debug/Release build flags
-enable_lto = False
 if env['NDEBUG']:
-    enable_lto = config.CheckCCFlag('-flto')
-    config.CheckCCFlag('-O2')
+    config.CheckCCFlag('-flto')
+    config.CheckCCFlag('-O3')
+    config.CheckLinkFlag('-flto')
     config.CheckLinkFlag('-s')
 else:
+    config.CheckCCFlag('-O0')
     config.CheckCCFlag('-g')
     config.CheckCCFlag('-Og')
 
