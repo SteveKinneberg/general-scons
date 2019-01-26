@@ -60,9 +60,10 @@ if os.path.exists('Doxyfile'):
         docs = project_env.Doxygen('Doxyfile')
         # Remove docs from default build
         project_env.Ignore(project_env['install_basedir'],
-                           project_env['install_basedir'] + '/docs')
+                           project_env['install_docdir'])
         project_env.Alias('docs', docs)
         project_env.Alias('all', 'docs')
+        project_env['sysinstall_doc'] = project_env['install_docdir'];
     else:
         print('*** WARNING: Documentation not generated: Doxygen not found')
 
@@ -82,6 +83,24 @@ if GetOption('run-tests'):
         if target_test_env['COVERAGE']:
             target_test_env.CoverageReport(prog, test_run)
 
+
+#######################################################
+# Install target files on to the system
+#######################################################
+sys_files = []
+if project_env.has_key('sysinstall_bin') and project_env['sysinstall_bin']:
+    sys_files.append(project_env.Install('$INSTALL_BIN_PREFIX', project_env['sysinstall_bin']))
+
+if project_env.has_key('sysinstall_lib') and project_env['sysinstall_lib']:
+    sys_files.append(project_env.Install('$INSTALL_LIB_PREFIX', project_env['sysinstall_lib']))
+
+if project_env.has_key('sysinstall_inc') and project_env['sysinstall_inc']:
+    sys_files.append(project_env.Install('$INSTALL_INCLUDE_PREFIX', project_env['sysinstall_inc']))
+
+if project_env.has_key('sysinstall_doc') and project_env['sysinstall_doc']:
+    sys_files.append(project_env.Install('$INSTALL_DOC_PREFIX', project_env['sysinstall_doc']))
+
+project_env.Alias('install', sys_files)
 
 #######################################################
 # Check required build dependencies

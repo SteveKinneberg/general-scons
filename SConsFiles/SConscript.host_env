@@ -10,11 +10,7 @@ env = project_env.Clone(
     tools = [ 'default' ],
     build_dir = build_dir,
     install_basedir = install_basedir,
-    install_bindir = install_basedir + '/bin',
-    install_incdir = install_basedir + '/include',
-    install_libdir = install_basedir + '/lib',
-    install_docdir = install_basedir + '/docs',
-    install_covdir = install_basedir + '/coverage',
+    install_bindir = '$install_basedir/tools',
     required = {},
     native_build = True
 )

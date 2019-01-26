@@ -9,7 +9,8 @@ Import('base_env')
 build_dir = base_env['build_dir'] + '/test'
 
 env = base_env.Clone(automated_tests = [],
-                     build_dir = build_dir)
+                     build_dir = build_dir,
+                     install_bindir = '$install_basedir/test')
 
 if env['native_build'] and env['PRODUCTION']:
     env['ENV']['LD_LIBRARY_PATH'] = ':'.join([ os.environ['LD_LIBRARY_PATH'],

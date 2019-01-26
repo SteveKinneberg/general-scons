@@ -7,7 +7,12 @@ import sys
 #######################################################
 project_env = Environment(tools = [ 'doxygen' ],
                           build_dir = '#build/',
-                          install_basedir = '#dist/')
+                          install_basedir = '#dist/',
+                          install_bindir = '$install_basedir/bin',
+                          install_incdir = '$install_basedir/include',
+                          install_libdir = '$install_basedir/lib',
+                          install_docdir = '$install_basedir/docs',
+                          install_covdir = '$install_basedir/coverage')
 project_env.SourceCode('.', None)
 
 #######################################################
@@ -23,6 +28,11 @@ vars.Add(BoolVariable('V',          'Enable verbose builds.', False))
 vars.Add(BoolVariable('PRODUCTION', 'Select production build. (Suppress debug, code coverage hooks, and built-in library paths.)', False))
 vars.Add(BoolVariable('NDEBUG',     'Suppress debug build information. (Implied to be "yes/true" when PRODUCTION == yes/true.)', False))
 vars.Add(EnumVariable('TP',         'Target platform.', 'host', build_platforms))
+vars.Add(PathVariable('INSTALL_PREFIX',         'System directory to install target files to.',     '/usr/local'))
+vars.Add(PathVariable('INSTALL_BIN_PREFIX',     'System directory to install target binary to.',    '$INSTALL_PREFIX/bin', PathVariable.PathAccept))
+vars.Add(PathVariable('INSTALL_LIB_PREFIX',     'System directory to install target libraries to.', '$INSTALL_PREFIX/lib', PathVariable.PathAccept))
+vars.Add(PathVariable('INSTALL_INCLUDE_PREFIX', 'System directory to install target headers to.',   '$INSTALL_PREFIX/include', PathVariable.PathAccept))
+vars.Add(PathVariable('INSTALL_DOC_PREFIX',     'System directory to install documentation to.',    '$INSTALL_PREFIX/share/doc/iostream_filter', PathVariable.PathAccept))
 vars.Update(project_env)
 Help(vars.GenerateHelpText(project_env))
 

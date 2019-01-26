@@ -15,12 +15,7 @@ else:
 env = base_env.Clone(
     build_dir = build_dir,
     install_basedir = install_basedir,
-    install_bindir = install_basedir + '/bin',
-    install_incdir = install_basedir + '/include',
-    install_libdir = install_basedir + '/lib',
-    install_docdir = install_basedir + '/docs',
-    install_covdir = install_basedir + '/coverage'
-)
+    install_bindir = '$install_basedir/bin')
 
 # Add path to host-side tools built as part of the project to the target environment.
 env.PrependENVPath('PATH', host_env['install_bindir'])
@@ -38,5 +33,6 @@ if base_env != host_env:
 # Setup target coverage options
 #######################################################
 SConscript('coverage/SConscript.coverage', exports = ['env'])
+
 
 Return('env')
